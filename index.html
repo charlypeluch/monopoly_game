@@ -4,5 +4,28 @@
 	</head>
 	<body>
 			<script src="src/modelo.js"></script>
+			<script src="src/dados.js"></script>
+			
+			<script>
+				juego = new Juego()
+				user1 = new Usuario("Mario")
+				user2 = new Usuario("Laura")
+				user3 = new Usuario("Carlos")
+				user4 = new Usuario("Ana")
+				juego.agregarUsuario(user1)
+				juego.agregarUsuario(user2)
+				juego.agregarUsuario(user3)
+				juego.agregarUsuario(user4)
+				juego.nuevaPartida()
+				partida = juego.partidas[0]
+				partida.agregarParticipante(user1)
+				partida.agregarParticipante(user2)
+				partida.agregarParticipante(user3)
+				partida.agregarParticipante(user4)
+				ficha1 = partida.fichas[0]
+				ficha2 = partida.fichas[1]
+				ficha3 = partida.fichas[2]
+				ficha4 = partida.fichas[3]
+			</script>
 	</body>
 </html>

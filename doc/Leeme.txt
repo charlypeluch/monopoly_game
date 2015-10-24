@@ -1,0 +1,18 @@
+Este archivo es un ejemplo para utilizar con líneas de comando.
+
+Crear el repositorio en GitHub
+
+Clonar el repositorio (para tener los archivos localmente)
+
+Copiar/crear nuestros archivos en el repositorio local
+
+-----------------------COMANDO--------------------------
+git add --all
+
+git commit -m "Modificación del archivo leeme.txt"
+
+git push [credenciales]
+
+--------------------------------------------------
+
+git pull (esto lo hacemos con repositorios compartirdos)

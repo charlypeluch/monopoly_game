@@ -1,14 +1,20 @@
 describe("Monopoly",function(){
 	
-	var tablero
+	var partida = new Partida()
+	var usuarios = []
+	
+	for (var i=0; i<10; i++)
+	{
+		usuarios[i] = new Usuario("Usuario"+(i+1))
+	}
 	
 	beforeEach(function(){
-		tablero = new Tablero (40)
-		tablero.configurarTablero()
+		tablero = partida.tablero
+		dados = partida.dados
     });
 
-    describe("Crear el juego",function(){
-		it("debería existir tablero",function(){
+    describe("Crear la partida",function(){
+		it("debe crearse un tablero",function(){
 			expect(tablero).toBeDefined();
 		});
 		
@@ -260,18 +266,200 @@ describe("Monopoly",function(){
    	});
 	
 	/*Está por terminar*/
-	/*
+	
 	describe("Comprobar Barrios",function(){
-		var color=0;
 				
-		it("debe haber 1 barrio marrón con 2 calles",function(){
+		it("debe haber 1 barrio Marrón con 2 calles",function(){
+			var color=0;
+			
 			for (var i=0; i<40; i++)
 			{
-				if (tablero.casillas[i].tema.color="Marron")
+				if (tablero.casillas[i].tema.color=="Marron")
 					color=color+1;
 			}
 			
 			expect(color).toEqual(2);
 		});
-	});*/
+		
+		it("debe haber 1 barrio AzulClaro con 3 calles",function(){
+			var color=0;
+			
+			for (var i=0; i<40; i++)
+			{
+				if (tablero.casillas[i].tema.color=="AzulClaro")
+					color=color+1;
+			}
+			
+			expect(color).toEqual(3);
+		});
+		
+		it("debe haber 1 barrio Rosa con 3 calles",function(){
+			var color=0;
+			
+			for (var i=0; i<40; i++)
+			{
+				if (tablero.casillas[i].tema.color=="Rosa")
+					color=color+1;
+			}
+			
+			expect(color).toEqual(3);
+		});
+		
+		it("debe haber 1 barrio Naranja con 3 calles",function(){
+			var color=0;
+			
+			for (var i=0; i<40; i++)
+			{
+				if (tablero.casillas[i].tema.color=="Naranja")
+					color=color+1;
+			}
+			
+			expect(color).toEqual(3);
+		});
+		
+		it("debe haber 1 barrio Rojo con 3 calles",function(){
+			var color=0;
+			
+			for (var i=0; i<40; i++)
+			{
+				if (tablero.casillas[i].tema.color=="Rojo")
+					color=color+1;
+			}
+			
+			expect(color).toEqual(3);
+		});
+		
+		it("debe haber 1 barrio Amarillo con 3 calles",function(){
+			var color=0;
+			
+			for (var i=0; i<40; i++)
+			{
+				if (tablero.casillas[i].tema.color=="Amarillo")
+					color=color+1;
+			}
+			
+			expect(color).toEqual(3);
+		});
+		
+		it("debe haber 1 barrio Verde con 3 calles",function(){
+			var color=0;
+			
+			for (var i=0; i<40; i++)
+			{
+				if (tablero.casillas[i].tema.color=="Verde")
+					color=color+1;
+			}
+			
+			expect(color).toEqual(3);
+		});
+		
+		it("debe haber 1 barrio AzulOscuro con 2 calles",function(){
+			var color=0;
+			
+			for (var i=0; i<40; i++)
+			{
+				if (tablero.casillas[i].tema.color=="AzulOscuro")
+					color=color+1;
+			}
+			
+			expect(color).toEqual(2);
+		});
+	});
+	
+	describe("Comprobar los Dados",function(){
+		
+		it("Lanzamos un dado 100 veces y el valor siempre tiene que estar entre 1 y 6 (incluidos)",function(){
+			for (var i=0; i<100; i++)
+			{
+				dados.tirarDados();
+				expect(dados.dado1).toBeGreaterThan(0);
+				expect(dados.dado1).toBeLessThan(7);
+			}
+		});
+		
+		it("Lanzamos los 2 dados 100 veces y el valor de la suma siempre tiene que estar entre 2 y 12 (incluidos)",function(){
+			for (var i=0; i<100; i++)
+			{
+				dados.tirarDados();
+				expect(dados.resultado).toBeGreaterThan(1);
+				expect(dados.resultado).toBeLessThan(13);
+			}
+		});
+   	});
+	   
+	describe("Comprobar los Participantes",function(){
+		
+		it("El juego permite añadir 6 jugadores como máximo",function(){
+			for (var i=0; i<10; i++)
+				partida.agregarParticipante(usuarios[i])
+			expect(partida.fichas.length).toEqual(6);				
+		});
+   	});
+	
+	describe("Comprobar las Fichas",function(){
+		
+		it("Todas las fichas tienen asociado un usuario",function(){
+			for (var i=0; i<partida.fichas.length; i++)
+				expect(partida.fichas[i].usuario).toEqual(usuarios[i]);		
+		});
+		
+		it("Todas las fichas tienen un saldo inicial de 1500 pelotis",function(){
+			for (var i=0; i<partida.fichas.length; i++)
+				expect(partida.fichas[i].dinero).toEqual(1500);		
+		});
+		
+		it("Todas las fichas tienen asociada una figura distinta",function(){
+			for (var i=0; i<partida.fichas.length; i++)
+				for (var j=0; j<partida.fichas.length; j++)
+				{
+					if(i==j)
+						expect(partida.fichas[i].figura).toEqual(partida.fichas[j].figura);
+					else
+						expect(partida.fichas[i].figura).not.toEqual(partida.fichas[j].figura);
+				}
+		});
+		
+		it("Todas las fichas pueden lanzar el dado y cambiar de posición",function(){
+			var aux
+			
+			for (var i=0; i<partida.fichas.length; i++)
+			{
+				aux = partida.fichas[i].posicion;
+				partida.fichas[i].lanzar();
+				expect(partida.fichas[i].posicion).not.toEqual(aux)	
+			}	
+		});
+		
+		it("La ficha siempre se mueve dentro de los límites del tablero (lanza 100 veces)",function(){
+			for (var i=0; i<100; i++)
+			{
+				partida.fichas[0].lanzar();
+				expect(partida.fichas[0].posicion).toBeGreaterThan(-1);
+				expect(partida.fichas[0].posicion).toBeLessThan(40);
+			}	
+		});
+		
+		it("Si la ficha lanza 3 dobles seguidos va a la carcel",function(){
+			var aux = 0
+			
+			for (var i=0; i<1000; i++)
+			{
+				partida.fichas[0].lanzar();
+				
+				if(partida.dados.esDoble())
+				{
+					aux++
+					if(aux==3)
+					{
+						expect(partida.fichas[0].posicion).toEqual(10);
+						aux=0;
+					}
+				}
+				else
+				{
+					aux=0
+				}
+			}	
+		});
+   	});
 })
