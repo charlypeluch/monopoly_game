@@ -1,0 +1,257 @@
+<html>
+<head>
+	<title>Monopoly</title>
+    <!--<link rel="icon" type="image/png" sizes="96x96" href="client/img/favicon.png">-->
+    
+    <script src="client/lib/jquery-min.js"></script>
+	<script src="client/lib/jquery.cookie.js"></script>
+	<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    
+    <!--Login-->
+    <link rel="stylesheet" href="client/css/login_style.css">
+    <script src='client/js/login_javascript.js'></script>
+        <!-- Facebook: https://github.com/ryandrewjohnson/jquery-fblogin -->
+        <!-- GooglePlus: http://www.smartrabbit.co/2015/03/10/autenticacion-con-google-api-con-javascript/ -->
+        
+    <!--Contenido-->
+    <script src="client/js/monopoly-client.js"></script>
+    
+     <!-- Contenedor -->
+    <link rel="stylesheet" href="client/css/roboto_font.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.light_blue-amber.min.css">
+    <link rel="stylesheet" href="client/css/content_style.css">
+    <script src="client/lib/material.min.js"></script>
+    
+    <!-- Boton Material -->
+    <link rel="stylesheet" href="client/css/material_button_style.css">
+    
+    <!-- Dialogo Material -->
+    <link rel="stylesheet" href="client/css/material_dialog_style.css">
+    <script src="client/js/material_dialog.js"></script>
+    
+    <script language="javascript" type="text/javascript">
+        window.onload = precarga;
+    </script>
+</head>
+<body>
+    <!-- Login -->
+    <div class="Login" id="Login" style="display: none">
+        <hgroup>
+            <h1>Monopoly ESIIAB</h1>
+            <h3>Acceso de Usuario</h3>
+        </hgroup>
+            <form>
+            <div class="group">
+                <input type="text" id="nombre"><span class="highlight"></span><span class="bar"></span>
+                <label>Nombre</label>
+            </div>
+            <div class="group">
+                <input type="email" id="email"><span class="highlight"></span><span class="bar"></span>
+                <label>Email</label>
+            </div>
+            <button type="button" class="button buttonOrange" onClick="acceso()">Acceder
+                <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+            </button>
+            <button type="button" class="button buttonFacebook" onClick="dialogo_info('El registro mediante Facebook esta desactivado!')">
+                <img src="client/img/Facebook_icon.png" class="social_icon"></img>Entrar con Facebook
+                <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+            </button>
+            <button type="button" class="button buttonGoogle" onClick="dialogo_info('El registro mediante Google+ esta desactivado!')">
+                <img src="client/img/Google_plus_icon.png" class="social_icon"></img>Entrar con Google+
+                <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+            </button>
+        </form>
+    </div>
+    
+    <!-- Contenedor -->
+	<div class="Contenedor" id="Contenedor" style="display: none">
+        <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+            <header class="demo-header mdl-layout__header">
+                <div class="mdl-layout__header-row">
+                <span class="mdl-layout-title mdl-color-text--blue-grey-50">Monopoly</span>
+                    <div class="mdl-layout-spacer"></div>
+                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="hdrbtn">
+                        <i class="material-icons mdl-color-text--blue-grey-50">more_vert</i>
+                    </button>
+                    <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right" for="hdrbtn">
+                        <li class="mdl-menu__item">Informacion</li>
+                        <li class="mdl-menu__item">Contacto</li>
+                        <li class="mdl-menu__item">Condiciones Legales</li>
+                    </ul>
+                </div>
+            </header>
+            <div class="demo-drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
+                <header class="demo-drawer-header">
+                    <div class="avatar-info">
+                        <img src="client/img/man.png" class="demo-avatar">
+                        <span id="nivel">Nivel: x</span>
+                    </div>
+                    <div class="demo-avatar-dropdown">
+                        <span id="nombre_usuario">hello@example.com</span>
+                        <div class="mdl-layout-spacer"></div>
+                        <button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                            <i class="material-icons" role="presentation">arrow_drop_down</i>
+                            <span class="visuallyhidden">Accounts</span>
+                        </button>
+                        <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
+                            <li id="partidas_jugadas" class="mdl-menu__item">Partidas Jugadas: x</li>
+                            <li id="partidas_ganadas" class="mdl-menu__item">Partidas Ganadas: x</li>
+                            <li id="partidas_perdidas" class="mdl-menu__item">Partidas Perdidas: x</li>
+                            <li id="partidas_abandonadas" class="mdl-menu__item">Partidas Abandonadas: x</li>
+                            <li id="usuario_salir" class="mdl-menu__item" onClick="borrarCookies()"><i class="material-icons">exit_to_app</i>Salir</li>
+                        </ul>
+                    </div>
+                </header>
+                <nav id="navegacion_lateral" class="demo-navigation mdl-navigation mdl-color--blue-grey-800">
+                <a id="ficha_figura" class="mdl-navigation__link"><i class="mdl-color-text--blue-grey-50 material-icons" role="presentation">inbox</i>Ficha</a>
+                <a id="ficha_dinero" class="mdl-navigation__link"><i class="mdl-color-text--blue-grey-50 material-icons" role="presentation">attach_money</i>x Pelotis</a>
+                <a id="ficha_posicion" class="mdl-navigation__link"><i class="mdl-color-text--blue-grey-50 material-icons" role="presentation">my_location</i>Posicion</a>
+                <a id="ficha_turno" class="mdl-navigation__link"><i class="mdl-color-text--blue-grey-50 material-icons" role="presentation">block</i>Turno</a>
+                <a id="ficha_estado" class="mdl-navigation__link"><i class="mdl-color-text--blue-grey-50 material-icons" role="presentation">accessibility</i>Estado</a>
+                <a id="ficha_encarcelado" class="mdl-navigation__link"><i class="mdl-color-text--blue-grey-50 material-icons" role="presentation">account_balance</i>Turnos Carcel</a>
+                <a id="ficha_propiedades" class="mdl-navigation__link"><i class="mdl-color-text--blue-grey-50 material-icons" role="presentation">local_offer</i>Propiedades</a>
+                <div class="mdl-layout-spacer"></div>
+                <a class="mdl-navigation__link" href="#"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">help_outline</i><span class="visuallyhidden">Help</span></a>
+                </nav>
+            </div>
+            <main class="mdl-layout__content mdl-color--grey-100">
+                <div class="mdl-grid demo-content">
+                <div class="demo-charts mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col">
+                    <div class="mdl-card__title mdl-card--expand mdl-color--amber-A400 mdl-color-text--blue-grey-800">
+                        <!--<p>Interacion del juego, informacion de console...</p>-->
+                        <textarea readonly id="info_interaccion" class="info_interaccion"></textarea>
+                    </div>
+                    
+                    <div class="mdl-card__actions_x mdl-card__supporting-text">
+                        <a class="mdl-text-action">Informacion del Juego</a>
+                    </div>
+                </div>
+                
+                <div class="demo-graphs mdl-color--background mdl-cell mdl-cell--8-col">
+                    <canvas id="canvas_tablero" class="demo-board mdl-shadow--2dp" width="1500px" height="1500px"></canvas>
+                    <!--<img src="client/img/Tablero2.jpg" class="demo-board mdl-shadow--2dp"/>-->
+                </div>
+                <div class="demo-cards mdl-cell mdl-cell--4-col mdl-cell--8-col-tablet mdl-grid mdl-grid--no-spacing">
+                    <div class="demo-updates mdl-card mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--4-col-tablet mdl-cell--12-col-desktop">
+                    <div class="mdl-card__title mdl-card--expand mdl-color--amber-A400">
+                        <div class="dado1" id="dado1">
+                            <img src="client/img/dado_n0.png"/>
+                            <img src="client/img/dado_n1.png"/>
+                            <img src="client/img/dado_n2.png"/>
+                            <img src="client/img/dado_n3.png"/>
+                            <img src="client/img/dado_n4.png"/>
+                            <img src="client/img/dado_n5.png"/>
+                            <img src="client/img/dado_n6.png"/>
+                        </div>
+                        <div style="width: 10%"></div>
+                        <div class="dado2" id="dado2">
+                            <img src="client/img/dado_n0.png"/>
+                            <img src="client/img/dado_n1.png"/>
+                            <img src="client/img/dado_n2.png"/>
+                            <img src="client/img/dado_n3.png"/>
+                            <img src="client/img/dado_n4.png"/>
+                            <img src="client/img/dado_n5.png"/>
+                            <img src="client/img/dado_n6.png"/>
+                        </div>  
+                    </div>
+                    <div class="mdl-card__actions">
+                        <a id="boton_lanzar_dados" class="mdl-button mdl-js-button mdl-js-ripple-effect" onClick="op_lanzarDados()" style="pointer-events: none;" disabled>Lanzar Dados</a>
+                    </div>
+                    </div>
+                    <div class="demo-separator mdl-cell--1-col"></div>
+                    <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--3-col-tablet mdl-cell--12-col-desktop">
+                    <div class="mdl-card__title mdl-card--expand mdl-color--amber-A400 mdl-color-text--blue-grey-800">
+                        <div class="mdl-card__title-sub">
+                            <span id="id_partida"><i class="mdl-color-text--blue-grey-800 material-icons">format_shapes</i>id_partida</span>
+                            <span id="participantes_partida"><i class="mdl-color-text--blue-grey-800 material-icons">group</i>n_participantes</span>
+                            <span id="fase_partida"><i class="mdl-color-text--blue-grey-800 material-icons">donut_large</i>fase</span>
+                            <span id="casas_partida"><i class="mdl-color-text--blue-grey-800 material-icons">home</i>n_casas</span>
+                            <span id="hoteles_partida"><i class="mdl-color-text--blue-grey-800 material-icons">location_city</i>n_hoteles</span>
+                        </div>
+                    </div>
+                    <div class="mdl-card__actions_x mdl-card__supporting-text">
+                        <a class="mdl-text-action">Informacion de la Partida</a>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </main>
+        </div>
+        <div id="espacio_comienzo" class="espacio_c" style="display: none;">
+            <button class="botonF0" onClick="comenzarJuego()">
+                <i class="material-icons button-icons mdl-color-text--blue-grey-50">play_arrow</i>
+            </button>
+        </div>
+        <div id="espacio_fin" class="espacio_f" style="display: none;">
+            <button class="botonF0" onClick="reset()">
+                <i class="material-icons button-icons mdl-color-text--blue-grey-50">stop</i>
+            </button>
+        </div>
+	</div>
+    <div id="espacio_acciones_v" class="espacio_v" style="display: none;">
+        
+        <button class="botonF1">
+            <span>+</span>
+        </button>
+        <button id="boton_usar_tarjeta" class="btn_v botonF2" onClick="...">
+            <i class="material-icons button-icons mdl-color-text--blue-grey-50" onClick="op_usarTarjeta()">credit_card</i>
+        </button>
+        <button id="boton_pagar_carcel" class="btn_v botonF3" onClick="op_pagarCarcel">
+            <i class="material-icons button-icons mdl-color-text--blue-grey-50" onClick="dialogo_resp(op_pagarCarcel())">local_atm</i>
+        </button>
+        <button id="boton_deshipotecar" class="btn_v botonF4" onClick="dialogo_resp('Deshipotecar',op_deshipotecar)">
+            <i class="material-icons button-icons mdl-color-text--blue-grey-50">layers_clear</i>
+        </button>
+        <button id="boton_hipotecar" class="btn_v botonF5" onClick="dialogo_resp('Hipotecar',op_hipotecar)">
+            <i class="material-icons button-icons mdl-color-text--blue-grey-50">layers</i>
+        </button>
+        <button id="boton_vender" class="btn_v botonF6" onClick="dialogo_resp('Vender',op_vender)">
+            <i class="material-icons button-icons mdl-color-text--blue-grey-50">attach_money</i>
+        </button>
+        <button id="boton_comprar" class="btn_v botonF7" onClick="op_comprar()">
+            <i class="material-icons button-icons mdl-color-text--blue-grey-50">add_shopping_cart</i>
+        </button>
+        <button id="boton_pasar_turno" class="btn_v botonF8" onClick="op_pasarTurno()">
+            <i class="material-icons button-icons mdl-color-text--blue-grey-50">subdirectory_arrow_right</i>
+        </button>
+        <button id="boton_colocar" class="btn_v botonF9" onClick="dialogo_resp('Colocar Ficha',op_colocarFicha)">
+            <i class="material-icons button-icons mdl-color-text--blue-grey-500">add_location</i>
+        </button>
+    </div>
+    <div id="espacio_acciones_h" class="espacio_h" style="display: none;">
+        <button id="boton_derruir_hotel" class="btn_h botonFF2" onClick="dialogo_resp('Derruir Hotel',op_derruirHotel)">
+            <i class="material-icons button-icons mdl-color-text--blue-grey-50">money_off</i>
+        </button>
+        <button id="boton_construir_hotel" class="btn_h botonFF3" onClick="dialogo_resp('Construir Hotel',op_construirHotel)">
+            <i class="material-icons button-icons mdl-color-text--blue-grey-50">location_city</i>
+        </button>
+        <button id="boton_derruir_casa" class="btn_h botonFF4" onClick="dialogo_resp('Derruir Casa',op_derruirCasa)">
+            <i class="material-icons button-icons mdl-color-text--blue-grey-50">money_off</i>
+        </button>
+        <button id="boton_construir_casa" class="btn_h botonFF5" onClick="dialogo_resp('Construir Casa',op_construirCasa)">
+            <i class="material-icons button-icons mdl-color-text--blue-grey-50">home</i>
+        </button>
+    </div>
+    <!-- Etiquetas Informativas -->
+    <div class="info_flotante">
+        <div class="mdl-tooltip mdl-tooltip" for="boton_usar_tarjeta">Usar Tarjeta Carcel</div>
+        <div class="mdl-tooltip mdl-tooltip" for="boton_pagar_carcel">Pagar Carecel</div>
+        <div class="mdl-tooltip mdl-tooltip" for="boton_deshipotecar">Deshipotecar</div>
+        <div class="mdl-tooltip mdl-tooltip" for="boton_hipotecar">Hipotecar</div>
+        <div class="mdl-tooltip mdl-tooltip" for="boton_vender">Vender</div>
+        <div class="mdl-tooltip mdl-tooltip" for="boton_comprar">Comprar</div>
+        <div class="mdl-tooltip mdl-tooltip" for="boton_pasar_turno">Pasar Turno</div>
+        <div class="mdl-tooltip mdl-tooltip" for="boton_colocar">Colocar Ficha</div>
+        <div class="mdl-tooltip mdl-tooltip" for="boton_construir_casa">Construir Casa</div>
+        <div class="mdl-tooltip mdl-tooltip" for="boton_derruir_casa">Derruir Casa</div>
+        <div class="mdl-tooltip mdl-tooltip" for="boton_construir_hotel">Constuir Hotel</div>
+        <div class="mdl-tooltip mdl-tooltip" for="boton_derruir_hotel">Derruir Hotel</div>
+    </div>
+    <div id="demo-toast-example" class="mdl-js-snackbar mdl-snackbar">
+      <div class="mdl-snackbar__text"></div>
+      <button class="mdl-snackbar__action" type="button"></button>
+    </div>
+    <script src="client/js/material_button.js"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+$('.botonF1').hover(function(){
+  $('.btn_v').addClass('animacionVer');
+  $('.btn_h').addClass('animacionVer');
+})
+$('.btn_v').mouseleave(function(){
+  $('.btn_v').removeClass('animacionVer');
+  $('.btn_h').removeClass('animacionVer');
+})
+$('.btn_v').mouseenter(function(){
+  $('.btn_v').addClass('animacionVer');
+  $('.btn_h').addClass('animacionVer');
+  $('.notif_flotante').fadeIn("fast");
+})
+$('.btn_h').mouseleave(function(){
+  $('.btn_v').removeClass('animacionVer');
+  $('.btn_h').removeClass('animacionVer');
+})
+$('.btn_h').mouseenter(function(){
+  $('.btn_v').addClass('animacionVer');
+  $('.btn_h').addClass('animacionVer');
+  $('.notif_flotante').fadeIn("fast");
+})
+$('.espacio_v').mouseleave(function(){
+  $('.btn_v').removeClass('animacionVer');
+  $('.btn_h').removeClass('animacionVer');
+})
+$('.espacio_h').mouseleave(function(){
+  $('.btn_v').removeClass('animacionVer');
+  $('.btn_h').removeClass('animacionVer');
+})
+$('.btn_v').click(function(){
+  $('.btn_v').removeClass('animacionVer');
+  $('.btn_h').removeClass('animacionVer');
+  $('.notif_flotante').fadeOut("slow");
+})
+$('.btn_h').click(function(){
+  $('.btn_v').removeClass('animacionVer');
+  $('.btn_h').removeClass('animacionVer');
+  $('.notif_flotante').fadeOut("slow");
+})
